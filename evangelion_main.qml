@@ -344,7 +344,7 @@ Item{
 
 FileIO {
     id: config_file
-    source: "/opt/Garw_IC7/screen_configs/Taikyu_config.txt"
+    source: "/opt/Garw_IC7/screen_configs/evangelion_config.txt"
     onError: console.log(msg)
        }
 
@@ -787,7 +787,7 @@ FileIO {
 ////////////////////////////////////
 //////////////////////////////////
 
-evangelion{
+Evangelion{
         id: dial
         odometer:parent.odometer/10
         tripmeter:parent.tripmeter

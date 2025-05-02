@@ -255,26 +255,11 @@ Item {
             }
         }
     }
-    function tempColors(fluid){
-        if((fluid === "COOLANT" && root.watertemp >= root.waterhigh) || (fluid === "OIL" && root.oiltemp >= root.oiltemphigh)){
-            return root.warning_color
+    function padStart(str, targetLength, padString) {
+        while (str.length < targetLength) {
+            str = padString + str;
         }
-        else{
-            if(root.sidelight){
-                return root.lit_primary_color
-            }
-            else{
-                return root.primary_color
-            }
-        }
-    }
-    function tempWarningColor(){
-        if(root.sidelight){
-            return root.salmon_warning_color
-        }
-        else{
-            return root.warning_color
-        }
+        return str;
     }
     function getGear(){
         switch(rpmtest.geardata){
@@ -347,7 +332,7 @@ Item {
                     if(root.rpm === 0 && root.car_movement===false){
                         asukaTimer.start()
                     }
-                    if(root.rpm === 4000 || root.rpm === 6000 || root.rpm === 7000 || root.rpm === 7500){
+                    if((root.rpm > 3900 && root.rpm < 4100) || (root.rpm > 5900 && root.rpm < 6100) || (root.rpm > 6950 && root.rpm < 7100) || (root.rpm > 7150 && root.rpm < 7600)){
                         asukaTimer.start()
                     }
             }
@@ -708,9 +693,9 @@ Item {
                 font.family: evangelionDigital.name
                 font.pixelSize: 116
                 text: if (root.speedunits === 0) {
-                    root.speed.toFixed(0).padStart(3,"0")
+                    padStart(root.speed.toFixed(0),3,"0")
                 } else {
-                    root.mph.toFixed(0).padStart(3,"0")
+                    padStart(root.mph.toFixed(0),3,"0")
                 }
                 horizontalAlignment: Text.AlignRight
             }
@@ -929,9 +914,9 @@ Item {
                 }
                 Text{
                     text: if (root.speedunits === 0)
-                        (root.odometer/.62).toFixed(0).padStart(6,"0")
+                        padStart((root.odometer/.62).toFixed(0), 6, "0")
                     else 
-                        root.odometer.padStart(6,"0")
+                        padStart(root.odometer, 6, "0")
                     font.family: evangelionDigital.name
                     font.pixelSize: 22
                     x:715;y:425
@@ -1015,7 +1000,7 @@ Item {
         }
     //Idiot Lights
     Image{
-        visible: root.oil
+        visible: root.oil && root.rpm > 0
         x:0; y:140; z: 999
         source: "./images/oilpressurelow.png"
     }
