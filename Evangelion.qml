@@ -206,9 +206,6 @@ Item {
     }
    
     //Utilities  
-    Timer {
-        id: timer
-    }
 
     function delay(delayTime, cb) {
         timer.interval = delayTime;
