@@ -186,24 +186,11 @@ Item {
     }
 
 
-    //Master Function/Timer for Peak values
-    function checkPeaks(){
-        if(root.rpm > root.peak_rpm){
-            root.peak_rpm = root.rpm
-        }
-        if(root.speed > root.peak_speed){
-            root.peak_speed = root.speed
-        }
-        if(root.watertemp > root.peak_water){
-            root.peak_water = root.watertemp
-        }
-        if(root.oiltemp > root.peak_oil){
-            root.peak_oil = root.oiltemp
-        }
-        if(root.speed > 10 && !root.car_movement){
-            root.car_movement = true
-        }
-    }
+    //list for Peak values
+    onRpmChanged: if (rpm > peak_rpm) peak_rpm = rpm
+    onSpeedChanged: if (speed > peak_speed) peak_speed = speed
+    onWatertempChanged: if (watertemp > peak_water) peak_water = watertemp
+    onOiltempChanged: if (oiltemp > peak_oil) peak_oil = oiltemp
    
     //Utilities  
 
@@ -322,17 +309,26 @@ Item {
         }
     }
 
-    //Master Timer 
-    Timer{
-        interval: 2; running: true; repeat: true //Maybe we need to change interval time depending on potential lag, shouldn"t be that much though
-        onTriggered: {checkPeaks()
-                    if(root.rpm === 0 && root.car_movement===false){
-                        asukaTimer.start()
-                    }
-                    if((root.rpm > 3900 && root.rpm < 4100) || (root.rpm > 5900 && root.rpm < 6100) || (root.rpm > 6950 && root.rpm < 7100) || (root.rpm > 7150 && root.rpm < 7600)){
-                        asukaTimer.start()
-                    }
-            }
+    //Timer Removed for performant check
+    onRpmChanged: {
+          // Idle state - trigger face
+          if (rpm === 0 && car_movement === false) {
+              asukaTimer.start()
+          }
+          // RPM milestone transitions - trigger face at gear changes
+          if ((rpm > 3900 && rpm < 4100) || 
+              (rpm > 5900 && rpm < 6100) || 
+              (rpm > 6950 && rpm < 7100) || 
+              (rpm > 7150 && rpm < 7600)) {
+              asukaTimer.start()
+          }
+      }
+
+    onCar_movementChanged: {
+        // If car stops moving and idle, show face
+        if (rpm === 0 && car_movement === false) {
+            asukaTimer.start()
+        }
     }
 
     /* ########################################################################## */
